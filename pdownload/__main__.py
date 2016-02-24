@@ -17,9 +17,10 @@ DUPLICATE = 'DUPLICATE'
 
 def load_json_file(file_name):
     with open(file_name) as f:
-        data = json.load(file_name)
+        data = json.load(f)
 
     for datum in data:
+        print(datum)
         yield datum
 
 
@@ -31,7 +32,7 @@ def get_file_name(url):
 def download(url_data, timeout):
     url = url_data['url']
     id = url_data['id']
-    if os.path.exists(url):
+    if os.path.exists(url) or os.path.exists(id):
         return url, DUPLICATE, None
 
     try:
@@ -41,6 +42,7 @@ def download(url_data, timeout):
             os.rename(url, id)
         return url, SUCCESS, None
     except Exception as e:
+        print(e)
         if os.path.exists(url):
             os.remove(url)
         return url, FAILURE, e.message
