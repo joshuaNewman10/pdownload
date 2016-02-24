@@ -32,19 +32,20 @@ def get_file_name(url):
 def download(url_data, timeout):
     url = url_data['url']
     id = url_data['id']
-    if os.path.exists(url) or os.path.exists(id):
+    fn = get_file_name(url)
+    if os.path.exists(fn) or os.path.exists(id):
         return url, DUPLICATE, None
 
     try:
         response = urllib2.urlopen(url, timeout=timeout)
-        with open(url, 'wb') as im_file:
+        with open(fn, 'wb') as im_file:
             im_file.write(response.read())
-            os.rename(url, id)
+            os.rename(fn, id)
         return url, SUCCESS, None
     except Exception as e:
         print(e)
-        if os.path.exists(url):
-            os.remove(url)
+        if os.path.exists(fn):
+            os.remove(fn)
         return url, FAILURE, e.message
 
 
